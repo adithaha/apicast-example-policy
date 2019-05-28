@@ -8,8 +8,10 @@ function _M.new()
 end
 
 function _M:access()
+  ngx.log(ngx.INFO, 'SSL Passthrough _M:access started')
   local client_cert = ngx.var.ssl_client_raw_cert and ngx.var.ssl_client_raw_cert:gsub('\\n',' ') or nil
   ngx.req.set_header("X-SSL-CERT", new_value)
+  ngx.log(ngx.INFO, 'SSL Passthrough _M:access completed')
 end
 
 
