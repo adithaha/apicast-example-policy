@@ -20,5 +20,13 @@ function _M:log()
   ngx.log(ngx.WARN, 'SSL Passthrough enabled but with WARN')
 end
 
+function _M:rewrite()
+  ngx.log(ngx.INFO, 'Passing through the rewrite phase.')
+end
+
+function _M:header_filter()
+  ngx.log(ngx.INFO, 'Passing through the header_filter phase')
+end
+
 
 return _M
