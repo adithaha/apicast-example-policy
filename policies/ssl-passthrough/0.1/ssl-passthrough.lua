@@ -8,24 +8,24 @@ function _M.new()
 end
 
 function _M:access()
-  ngx.log(ngx.INFO, 'SSL Passthrough _M:access started')
+  ngx.log(ngx.WARN, 'SSL Passthrough _M:access started')
   local client_cert = ngx.var.ssl_client_raw_cert and ngx.var.ssl_client_raw_cert:gsub('\\n',' ') or nil
   ngx.req.set_header("X-SSL-CERT", new_value)
-  ngx.log(ngx.INFO, 'SSL Passthrough _M:access completed')
+  ngx.log(ngx.WARN, 'SSL Passthrough _M:access completed')
 end
 
 
 function _M:log()
-  ngx.log(ngx.INFO, 'SSL Passthrough enabled')
-  ngx.log(ngx.WARN, 'SSL Passthrough enabled but with WARN')
+  ngx.log(ngx.INFO, 'SSL Passthrough enabled - ')
+  ngx.log(ngx.WARN, 'SSL Passthrough enabled but with WARN - ')
 end
 
 function _M:rewrite()
-  ngx.log(ngx.INFO, 'Passing through the rewrite phase.')
+  ngx.log(ngx.WARN, 'Passing through the rewrite phase. - ')
 end
 
 function _M:header_filter()
-  ngx.log(ngx.INFO, 'Passing through the header_filter phase')
+  ngx.log(ngx.WARN, 'Passing through the header_filter phase - ')
 end
 
 
