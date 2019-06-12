@@ -11,8 +11,8 @@ function _M.new()
   
   
   local backend = 'https://sample-ssl-api-anugraha-ssl.apps.rhpds311.openshift.opentlc.com:443'
-  local upstream, err = Upstream.new(backend)
-  upstream:proxy_pass(backend)
+  local upstream, err = Upstream.new('https://sample-ssl-api-anugraha-ssl.apps.rhpds311.openshift.opentlc.com:443')
+  upstream:proxy_pass('https://sample-ssl-api-anugraha-ssl.apps.rhpds311.openshift.opentlc.com:443')
   
   ngx.log(ngx.INFO, 'SSL Passthrough - _M:new completed')
   
