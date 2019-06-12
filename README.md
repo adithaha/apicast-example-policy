@@ -8,13 +8,20 @@ This policy is an example how to make custom policies for APIcast.
 ## OpenShift
 
 
+oc login -u anugraha-redhat.com https://master.rhpds311.openshift.opentlc.com
 
+## Install 3scale rhpds
 
-## Install 3scale
+oc new-project anugraha-ssl
+
+oc new-app -f https://raw.githubusercontent.com/adithaha/3scale-amp-openshift-templates/2.5.0.GA-RHPDS/amp/amp-rhpds.yml -p MASTER_PASSWORD=master -p ADMIN_PASSWORD=admin -p WILDCARD_DOMAIN=anugraha-ssl.apps.rhpds311.openshift.opentlc.com 
+
+## Install 3scale normal
 
 oc new-project anugraha-ssl
 
 oc new-app -f https://raw.githubusercontent.com/3scale/3scale-amp-openshift-templates/2.5.0.GA/amp/amp.yml -p MASTER_PASSWORD=master -p ADMIN_PASSWORD=admin -p WILDCARD_DOMAIN=anugraha-ssl.apps.rhpds311.openshift.opentlc.com 
+
 oc set resources dc/apicast-production --requests=cpu=100m,memory=64Mi --limits=cpu=200m,memory=128Mi
 oc set resources dc/apicast-wildcard-router --requests=cpu=120m,memory=32Mi --limits=cpu=300m,memory=64Mi
 oc set resources dc/backend-listener --requests=cpu=300m,memory=400Mi --limits=cpu=400m,memory=600Mi
@@ -22,9 +29,9 @@ oc set resources dc/backend-worker --requests=cpu=100m,memory=50Mi --limits=cpu=
 oc set resources dc/system-sidekiq  --requests=cpu=100m,memory=200Mi --limits=cpu=300m,memory=300Mi
 oc set resources dc/system-sphinx --requests=cpu=80m,memory=200Mi --limits=cpu=200m,memory=300Mi
 oc set resources dc/zync --requests=cpu=150m,memory=100Mi --limits=cpu=300m,memory=250Mi
-
 oc set resources dc/system-redis --requests=cpu=50m,memory=32Mi --limits=cpu=200m,memory=128Mi
 oc set resources dc/backend-redis --requests=cpu=50m,memory=32Mi --limits=cpu=200m,memory=128Mi
+
 oc set resources dc/zync-database --requests=cpu=50m,memory=200Mi --limits=cpu=250m,memory=250Mi
 oc set resources dc/system-mysql --requests=cpu=200m,memory=512Mi --limits=cpu=300m,memory=600Mi
 oc set resources dc/system-app -c system-master --requests=cpu=50m,memory=600Mi --limits=cpu=250m,memory=800Mi
@@ -32,14 +39,27 @@ oc set resources dc/system-app -c system-provider --requests=cpu=50m,memory=600M
 oc set resources dc/system-app -c system-developer --requests=cpu=50m,memory=600Mi --limits=cpu=250m,memory=800Mi
 
 
+
 ## Install sample ssl application
 
 oc new-app java:8~https://github.com/pajikos/java-examples.git --context-dir=spring-rest-api-client-auth --name=sample-ssl-api
+oc create route passthrough --service=sample-ssl-api --port=8443 
 
 
 ## Uninstall project
 
 oc delete project anugraha-ssl
+
+
+## set secured apicast
+
+oc set env dc/apicast-staging APICAST_HTTPS_PORT=8443
+oc set env dc/apicast-staging APICAST_LOG_LEVEL=info
+oc patch service apicast-staging -p '{"spec":{"ports":[{"name":"https","port":8443,"protocol":"TCP"}]}}'
+oc delete route api-apicast-staging
+oc create route passthrough api-apicast-staging --service=apicast-staging --port=8443 --hostname=api-3scale-apicast-staging.anugraha-ssl.apps.rhpds311.openshift.opentlc.com
+oc rollout latest dc/apicast-staging
+
 
 
 ## Create custom apicast build
