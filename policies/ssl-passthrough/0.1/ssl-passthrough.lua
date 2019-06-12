@@ -3,7 +3,14 @@ local setmetatable = setmetatable
 local _M = require('apicast.policy').new('SSL Passthrough', '0.1')
 local mt = { __index = _M }
 
+local Upstream = require('apicast.upstream')
+
 function _M.new()
+  --local upstream, err = Upstream.new(rule.url)
+  
+  ngx.log(ngx.INFO, 'SSL Passthrough - _M:new started')
+  ngx.log(ngx.INFO, ngx.var.scheme .. '://' .. ngx.var.host)
+  ngx.log(ngx.INFO, 'SSL Passthrough - _M:new completed')
   return setmetatable({}, mt)
 end
 
@@ -32,9 +39,6 @@ function _M:rewrite()
   ngx.req.set_header("X-SSL-CERT", client_cert)
   
   local headerCert = ngx.req.get_headers()["X-SSL-CERT"]
-  --local header-content = ngx.req.get_headers()["X-SSL-CERT"]
-  --local header-content = ngx.header["X-SSL-CERT"]
-  --proxy_set_header X-SSL-CERT $client_cert
   ngx.log(ngx.INFO, 'SSL Passthrough - headerCert: ')
   ngx.log(ngx.INFO, headerCert)
   
