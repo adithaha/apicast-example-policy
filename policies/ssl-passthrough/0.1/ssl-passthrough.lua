@@ -18,12 +18,12 @@ function _M:access()
   ngx.log(ngx.INFO, client_cert)
   ngx.req.set_header("X-SSL-CERT", client_cert)
   
-  ngx.say("Adit Host: ", ngx.req.get_headers()["Host"])
+  local host = ngx.say("Adit Host: ", ngx.req.get_headers()["Host"])
   --local header-content = ngx.req.get_headers()["X-SSL-CERT"]
   --local header-content = ngx.header["X-SSL-CERT"]
   
   ngx.log(ngx.INFO, 'SSL Passthrough - header-content: ')
-  ngx.log(ngx.INFO, header-content)
+  ngx.log(ngx.INFO, host)
   
   ngx.log(ngx.INFO, 'SSL Passthrough - _M:access completed')
 end
