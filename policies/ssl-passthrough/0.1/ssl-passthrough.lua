@@ -6,11 +6,17 @@ local mt = { __index = _M }
 local Upstream = require('apicast.upstream')
 
 function _M.new()
-  --local upstream, err = Upstream.new(rule.url)
-  
   ngx.log(ngx.INFO, 'SSL Passthrough - _M:new started')
   ngx.log(ngx.INFO, ngx.var.scheme .. '://' .. ngx.var.host)
+  
+  
+  local backend = 'https://sample-ssl-api-anugraha-ssl.apps.rhpds311.openshift.opentlc.com:443'
+  local upstream, err = Upstream.new(backend)
+  upstream:proxy_pass(backend)
+  
   ngx.log(ngx.INFO, 'SSL Passthrough - _M:new completed')
+  
+  
   return setmetatable({}, mt)
 end
 
