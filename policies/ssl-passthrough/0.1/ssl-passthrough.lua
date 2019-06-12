@@ -19,7 +19,7 @@ function _M:access()
   ngx.req.set_header("X-SSL-CERT", client_cert)
   
   --local header-content = ngx.req.get_headers()["X-SSL-CERT"]
-  local header-content = ngx.header["X-SSL-CERT"]
+  --local header-content = ngx.header["X-SSL-CERT"]
   
   ngx.log(ngx.INFO, 'SSL Passthrough - header-content: ')
   ngx.log(ngx.INFO, header-content)
